@@ -1,0 +1,36 @@
+
+
+!pip install ibm_watson
+
+from ibm_watson import SpeechToTextV1
+from ibm_watson.websocket import RecognizeCallback, AudioSource 
+from ibm_cloud_sdk_core.authenticators import IAMAuthenticator
+
+apikey = 'BP41IP5dPX1unNFJYddOouahiPGHVimpBLU_XLm9ECJy'
+url = 'https://api.eu-gb.speech-to-text.watson.cloud.ibm.com/instances/3e4c2f7c-dfae-4e4b-ad70-83ae4c73681b'
+
+# Setup Service
+authenticator = IAMAuthenticator(apikey)
+stt = SpeechToTextV1(authenticator=authenticator)
+stt.set_service_url(url)
+
+from google.colab import files
+uploaded = files.upload()
+
+# Perform conversion
+with open('kkk.mp3', 'rb') as f:
+    res = stt.recognize(audio=f, content_type='audio/mp3', model='en-US_NarrowbandModel', continuous=True).get_result()
+
+res
+
+text = res['results'][0]['alternatives'][0]['transcript']
+text
+
+confidence = res['results'][0]['alternatives'][0]['confidence']
+confidence
+
+from google.colab import files
+uploaded = files.upload()
+
+with open('aa.txt', 'w') as out:
+    out.writelines(text)
